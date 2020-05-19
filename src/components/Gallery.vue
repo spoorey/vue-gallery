@@ -1,16 +1,28 @@
 <template>
     <div class="row">
         <div 
-        class="col-6 col-md-4 p-3"
-        style="border: 1px solid #ccc"
-        v-for="image in images"
-        :key="image"
-        v-on:click="showImage(image)"
+        class="col-6 col-md-4 image-panel p-2"
+        v-for="(file, index) in images"
+        :key="file"
+        v-on:click="showImage(index)"
         >
-            <b-img-lazy v-bind:src="url + image"/>
+            <b-img-lazy v-bind:src="url + file"/>
         </div>
-        <b-modal id="current-image" title="" hide-footer=true hide-header=true1 size="xl">
-            <b-img v-bind:src="url + currentImage"></b-img>
+        <b-modal id="current-image" title="" hide-footer hide-header size="lg">
+            <a
+            class="carousel-control-prev" role="button" 
+            v-if="currentImage > 0"
+            v-on:click="showImage(currentImage-1)">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <b-img v-bind:src="url + images[currentImage]"></b-img>
+            <a
+                class="carousel-control-next" role="button"
+                v-if="currentImage < images.length - 1"
+                v-on:click="showImage(currentImage+1)">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </b-modal>
     </div>
 </template>
@@ -29,13 +41,22 @@ export default {
     return {
         url: '',
         images: [],
-        currentImage: '',
+        currentImage: null,
     }
   },
   methods: {
-      showImage: function(image) {
-          this.currentImage = image;
-          this.$bvModal.show('current-image');
+      showImage: function(imageIndex) {
+        this.currentImage = imageIndex;
+        this.$bvModal.show('current-image');
+
+        var preload = new Image();
+        if (imageIndex > 0) {
+            preload.src = this.images[imageIndex-1];
+        }
+
+        if (imageIndex < this.images.length - 1) {
+            preload.src = this.images[imageIndex + 1];
+        }
       }
   }
 }
@@ -49,5 +70,15 @@ img {
 }
 #current-image img {
     max-height: calc(100vh - 80px);
+}
+.image-panel {
+    cursor: pointer;
+}
+
+.image-panel img {
+    border-radius: 5px;
+}
+.image-panel img:hover {
+    box-shadow: 0px 0px 5px 5px #bbb;
 }
 </style>
