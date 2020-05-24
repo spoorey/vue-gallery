@@ -1,5 +1,13 @@
 <template>
     <div class="row">
+        <div class="col-12">
+            <div>
+                <b-embed type="video" controls autoplay>
+                    <source v-bind:src="url + 'timelapse.webm'" type="video/webm">
+                </b-embed>
+            </div>
+        </div>
+
         <div 
         class="col-6 col-md-4 image-panel p-2"
         v-for="(file, index) in images"
